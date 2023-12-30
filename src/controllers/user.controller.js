@@ -16,8 +16,8 @@ import { ApiResponse } from "../utils/apiResponse.js";
     1.) Get user Details from frontend =[Done]
     2.) validate not empty [Done]
     3.) Check if user already exists: username, email [Done]
-    4.) Check for Image, Check for Avtar [Done]
-    5.) Upload them to cloudinary, Avtar [Done]
+    4.) Check for Image, Check for avatar [Done]
+    5.) Upload them to cloudinary, avatar [Done]
     6.) Create user Object - creat entry in database [Done]
     7.) remove password and refresh token from response [Done]
     8.) Check for user creation [Done]
@@ -50,9 +50,9 @@ const registerUser = asyncHandler(async (req, res) => {
   if (existedUser) {
     throw new ApiError(409, "User with email or username already register");
   }
-  console.log(req.files);
+  // console.log(req.files);
 
-  const avtarLocalPath = req.files?.avtar[0]?.path;
+  const avatarLocalPath = req.files?.avatar[0]?.path;
   const coverImageLocalPath = req.files?.coverImage[0]?.path;
 
   // let coverImageLocalPath;
@@ -64,23 +64,23 @@ const registerUser = asyncHandler(async (req, res) => {
   //   coverImageLocalPath = req.files.coverImage[0].path;
   // }
 
-  if (!avtarLocalPath) {
-    throw new ApiError(400, " Avtar file is required ");
+  if (!avatarLocalPath) {
+    throw new ApiError(400, " avatar file is required ");
   }
   // if cover image is required then
   // if (!coverImageLocalPath) {
   //   throw new ApiError(400, " Cover file is required ");
   // }
-  const avtar = await uploadOnCloudinary(avtarLocalPath);
+  const avatar = await uploadOnCloudinary(avatarLocalPath);
   const coverImage = await uploadOnCloudinary(coverImageLocalPath);
 
-  if (!avtar) {
-    throw new ApiError(400, "avtar file is required");
+  if (!avatar) {
+    throw new ApiError(400, "avatar file is required");
   }
 
   const user = await User.create({
     fullName,
-    avtar: avtar.url,
+    avatar: avatar.url,
     coverImage: coverImage?.url || "",
     email,
     password,
@@ -120,16 +120,16 @@ export { registerUser };
 
 /*
 ISSUE:=>
-        [1]. When i try to upload avtar image then it works fine but whenever i try to uplopad avtar with cover image then it showing:-
+        [1]. When i try to upload avatar image then it works fine but whenever i try to uplopad avatar with cover image then it showing:-
         -------------------------------------------------
         [nodemon] starting `node -r dotenv/config --experimental-json-modules src/index.js`
 
  MongoDB Connected Sucessfully !! DB HOST: ac-k4fitwn-shard-00-01.cumxf6g.mongodb.net
  Server is running on port: 8000
 [Object: null prototype] {
-  avtar: [
+  avatar: [
     {
-      fieldname: 'avtar',
+      fieldname: 'avatar',
       originalname: 'hsf.jpg',
       encoding: '7bit',
       mimetype: 'image/jpeg',
