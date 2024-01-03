@@ -3,6 +3,24 @@ import { ApiError } from "../utils/apiError.js";
 import { User } from "../models/user.model.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import { ApiResponse } from "../utils/apiResponse.js";
+
+const generateAccessAndRefreshToken = async (userId) => {
+  try {
+    const user = await User.findById(userId);
+    const accessToken = user.generateAccessToken();
+    const refreshToken = user.generateRefreshToken();
+
+    user.refreshToken = refreshToken;
+    await user.save({ validateBeforeSave: false });
+
+    return { accessToken, refreshToken };
+  } catch (error) {
+    throw new ApiError(
+      500,
+      "Somthing went wrong while generating access token and refresh token."
+    );
+  }
+};
 // ---------------------------Basic Connection Checkup------------------------------
 // const registerUser = asyncHandler(async (req, res) => {
 //   res.status(200).json({
@@ -50,7 +68,6 @@ const registerUser = asyncHandler(async (req, res) => {
   if (existedUser) {
     throw new ApiError(409, "User with email or username already register");
   }
-  // console.log(req.files);
 
   const avatarLocalPath = req.files?.avatar[0]?.path;
   // const coverImageLocalPath = req.files?.coverImage[0]?.path;
@@ -104,45 +121,95 @@ const registerUser = asyncHandler(async (req, res) => {
     .status(201)
     .json(new ApiResponse(200, createdUser, " user registered succesfully"));
 
-  //   console.log("Full Name:- ", fullName);
-  //   console.log("User Name:- ", username);
-  //   console.log("Email:- ", email);
-
   res.status(200).json({
     message: "data Recieved !!",
     email,
   });
 });
 
-export { registerUser };
-
-
+// -------------------------------------------- Login User ---------------------------------
 
 /*
-ISSUE:=>
-        [1]. When i try to upload avatar image then it works fine but whenever i try to uplopad avatar with cover image then it showing:-
-        -------------------------------------------------
-        [nodemon] starting `node -r dotenv/config --experimental-json-modules src/index.js`
-
- MongoDB Connected Sucessfully !! DB HOST: ac-k4fitwn-shard-00-01.cumxf6g.mongodb.net
- Server is running on port: 8000
-[Object: null prototype] {
-  avatar: [
-    {
-      fieldname: 'avatar',
-      originalname: 'hsf.jpg',
-      encoding: '7bit',
-      mimetype: 'image/jpeg',
-      destination: './public/temp',
-      filename: 'hsf.jpg',
-      path: 'public\\temp\\hsf.jpg',
-      size: 74030
-    }
-  ]
-}
-TypeError: Cannot read properties of undefined (reading '0')
-    at file:///C:/Users/AashishGulshan/Desktop/New%20folder/backend/src/controllers/user.controller.js:56:52
-    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
-
+Tasks:-
+    1.) Get Data from login route and req.body
+    2.) DB Call using email or username
+    3.) if found Validate with password
+    4.) access token an rrefresh token
+    5.) send in secure cookie to user
 
 */
+
+const loginUser = asyncHandler(async (req, res) => {
+  const { username, email, password } = req.body;
+
+  if (!username || !email) {
+    throw new ApiError(400, "Username or email required ! ");
+  }
+
+  const user = await User.findOne({
+    $or: [{ username }, { email }],
+  });
+
+  if (!user) {
+    throw new ApiError(404, "User not found");
+  }
+
+  const isPasswordValid = await user.isPasswordCorrect(password);
+
+  if (!isPasswordValid) {
+    throw new ApiError(401, "Invalid User Password !");
+  }
+
+  const { accessToken, refreshToken } = await generateAccessAndRefreshToken(
+    user._id
+  );
+  const logedInUser = await User.findById(user._id).select(
+    " -password -refreshToken"
+  );
+  const options = {
+    httpOnly: true,
+    secure: true,
+  };
+
+  return res
+    .status(200)
+    .cookie("accessToken", accessToken, options)
+    .cookie("refreshToken", refreshToken, options)
+    .json(
+      new ApiResponse(
+        200,
+        {
+          user: logedInUser,
+          accessToken,
+          refreshToken,
+        },
+        " User Successfully LogedIN!!"
+      )
+    );
+});
+
+const logoutUser = asyncHandler(async (req, res) => {
+  User.findByIdAndUpdate(
+    req.user._id,
+    {
+      $set: {
+        refreshToken: undefined,
+      },
+    },
+    {
+      new: true,
+    }
+  );
+  const options = {
+    httpOnly: true,
+    secure: true,
+  };
+
+  return res
+    .status(200)
+    .clearCookie("accessToken", options)
+    .clearCookie("refreshToken", options)
+    .json(new ApiResponse(200, {}, "User Logged Out Successfully"));
+});
+
+export { registerUser, loginUser, logoutUser };

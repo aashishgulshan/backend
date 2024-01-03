@@ -1,0 +1,59 @@
+/*
+ISSUE:=>
+        [1]. When i try to upload avatar image then it works fine but whenever i try to uplopad avatar with cover image then it showing:-
+        -------------------------------------------------
+        [nodemon] starting `node -r dotenv/config --experimental-json-modules src/index.js`
+
+ MongoDB Connected Sucessfully !! DB HOST: ac-k4fitwn-shard-00-01.cumxf6g.mongodb.net
+ Server is running on port: 8000
+[Object: null prototype] {
+  avatar: [
+    {
+      fieldname: 'avatar',
+      originalname: 'hsf.jpg',
+      encoding: '7bit',
+      mimetype: 'image/jpeg',
+      destination: './public/temp',
+      filename: 'hsf.jpg',
+      path: 'public\\temp\\hsf.jpg',
+      size: 74030
+    }
+  ]
+}
+TypeError: Cannot read properties of undefined (reading '0')
+    at file:///C:/Users/AashishGulshan/Desktop/New%20folder/backend/src/controllers/user.controller.js:56:52
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+
+SOLVED =>
+        Actually the problem with Postman vs code extension thats why you should use fully stable version installed in the computer system.
+        Or some times its not able to send data from the body data-field. So make sure try with inserting new data pairs.
+*//*
+ISSUE:=>
+        [1]. When i try to upload avatar image then it works fine but whenever i try to uplopad avatar with cover image then it showing:-
+        -------------------------------------------------
+        [nodemon] starting `node -r dotenv/config --experimental-json-modules src/index.js`
+
+ MongoDB Connected Sucessfully !! DB HOST: ac-k4fitwn-shard-00-01.cumxf6g.mongodb.net
+ Server is running on port: 8000
+[Object: null prototype] {
+  avatar: [
+    {
+      fieldname: 'avatar',
+      originalname: 'hsf.jpg',
+      encoding: '7bit',
+      mimetype: 'image/jpeg',
+      destination: './public/temp',
+      filename: 'hsf.jpg',
+      path: 'public\\temp\\hsf.jpg',
+      size: 74030
+    }
+  ]
+}
+TypeError: Cannot read properties of undefined (reading '0')
+    at file:///C:/Users/AashishGulshan/Desktop/New%20folder/backend/src/controllers/user.controller.js:56:52
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+
+SOLVED =>
+        Actually the problem with Postman vs code extension thats why you should use fully stable version installed in the computer system.
+        Or some times its not able to send data from the body data-field. So make sure try with inserting new data pairs.
+*/
