@@ -42,6 +42,12 @@ const generateAccessAndRefreshToken = async (userId) => {
     9.) return response. [Done]
 */
 
+const userlogin = asyncHandler(async (req, res) => {
+  // ---Get user Details from frontend---
+  const { username, email, password } = req.body;
+  console.log(req.body);
+  res.send("Data getting from json");
+});
 // ---------------------------- Get user Details from frontend -------------------------
 
 const registerUser = asyncHandler(async (req, res) => {
@@ -142,8 +148,16 @@ Tasks:-
 const loginUser = asyncHandler(async (req, res) => {
   const { username, email, password } = req.body;
 
-  if (!username || !email) {
+  // if ((username || email) === "") {
+  //     throw new ApiError(400, "Username OR Email can't be Empty !")
+  //   }
+
+  if (!(username || email)) {
     throw new ApiError(400, "Username or email required ! ");
+  }
+
+  if (password === "") {
+    throw new ApiError(400, "Password can't be Empty !");
   }
 
   const user = await User.findOne({
@@ -212,4 +226,4 @@ const logoutUser = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, {}, "User Logged Out Successfully"));
 });
 
-export { registerUser, loginUser, logoutUser };
+export { registerUser, loginUser, logoutUser, userlogin };
