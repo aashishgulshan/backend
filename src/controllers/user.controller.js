@@ -3,7 +3,7 @@ import { ApiError } from "../utils/apiError.js";
 import { User } from "../models/user.model.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import { ApiResponse } from "../utils/apiResponse.js";
-import { Jwt } from "jsonwebtoken";
+import  Jwt  from "jsonwebtoken";
 
 // ----------------------- generateAccessAndRefreshToken for  user ------------------------
 
@@ -284,4 +284,4 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
   }
 });
 
-export { registerUser, loginUser, logoutUser, userlogin, refreshAccessToken };
+export { registerUser, loginUser, logoutUser, testUser, refreshAccessToken };
