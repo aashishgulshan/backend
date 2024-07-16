@@ -10,12 +10,14 @@ import {
   updateUserAvatar,
   updateUserCoverImage,
   testUser,
+  test
 } from "../controllers/user.controller.js";
 import { upload } from "../middlewares/multer.middleware.js";
 import { verifyJWT } from "../middlewares/auth.middleware.js";
 
 const router = Router();
-router.route("/user").post(testUser);
+router.route("/").get(test)
+router.route("/user").get(testUser);
 router.route("/register").post(
   upload.fields([
     {

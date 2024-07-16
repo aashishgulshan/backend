@@ -31,12 +31,15 @@ const generateAccessAndRefreshToken = async (userId) => {
 //     message: "User Registered ! ",
 //   });
 // });
+const test = asyncHandler(async(req, res) => {
+  res.send("App Working Fine .... !!")
+})
 
 // ----------------------------------------- Test user --------------------------------
 
 const testUser = asyncHandler(async (req, res) => {
   // ---Get user Details from frontend---
-  const { username, email, password } = req.body;
+  // const { username, email, password } = req.body;
   console.log(req.body);
   res.send("Data getting from json");
 });
@@ -384,6 +387,7 @@ const updateUserCoverImage = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, user, "Cover Image Updated Sucessfully ! "));
 });
 
+
 export {
   registerUser,
   loginUser,
@@ -395,4 +399,5 @@ export {
   updateAccountDetails,
   updateUserAvatar,
   updateUserCoverImage,
+  test
 };
