@@ -3,6 +3,7 @@ import connectDB from "./db/index.js";
 import { app } from "./app.js";
 
 const PORT = process.env.PORT || 8000;
+const HOST = process.env.HOST || "http://localhost:";
 
 dotenv.config({
     path: './env',
@@ -11,7 +12,8 @@ dotenv.config({
 connectDB()
 .then( ()=>{
     app.listen(PORT, () => {
-        console.log(`Server is running on : http://localhost:8000/api/v1/users`);
+        console.log(`Server is running on : ${HOST}/api/v1/users`);
+        console.log(`Server is Locally running on : http://localhost:${PORT}/api/v1/users`);
     })
 })
 .catch( (err) => {
